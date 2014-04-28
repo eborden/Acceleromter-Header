@@ -2,7 +2,7 @@
   "name": "AccelerometerHeader",
   "version": "0.0.0",
   "description": "Create headers for accelerometer emails",
-  "main": "index.js",
+  "main": "bin/generate",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

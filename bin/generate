@@ -19,6 +19,7 @@ function percentize(v) {
 }
 
 function buildImage(data) {
+    var filePath = 'built/accelerometer-v' + parseInt(options.vol, 10) + '-i' + parseInt(options.i, 10) + '.png';
     gm('images/base.png')
         .modulate(100, 0, 100)
         //.modulate(data.hsv.hue, data.hsv.saturation, data.hsv.value)
@@ -28,11 +29,11 @@ function buildImage(data) {
         .drawText(270, 40, 'Accelerometer', 'northeast')
         .fontSize(12)
         .drawText(270, 50, 'volume ' + options.vol + ', issue ' + options.i, 'northeast')
-        .write('built/accelerometer-v' + parseInt(options.vol, 10) + '-i' + parseInt(options.i, 10) + '.png', function (err) {
+        .write(filePath, function (err) {
             if (err) {
                 console.log(err);
             } else {
-                console.log('written with color ' + data.title);
+                console.log('generated ' + filePath + ' with color "' + data.title + '"');
             }
         });
 }
