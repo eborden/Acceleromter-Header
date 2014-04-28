@@ -28,7 +28,7 @@ function buildImage(data) {
         .drawText(270, 40, 'Accelerometer', 'northeast')
         .fontSize(12)
         .drawText(270, 50, 'volume ' + options.vol + ', issue ' + options.i, 'northeast')
-        .write('images/accelerometer-v' + parseInt(options.vol, 10) + '-i' + parseInt(options.i, 10) + '.png', function (err) {
+        .write('built/accelerometer-v' + parseInt(options.vol, 10) + '-i' + parseInt(options.i, 10) + '.png', function (err) {
             if (err) {
                 console.log(err);
             } else {
