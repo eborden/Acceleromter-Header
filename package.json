@@ -1,0 +1,20 @@
+{
+  "name": "AccelerometerHeader",
+  "version": "0.0.0",
+  "description": "Create headers for accelerometer emails",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "usm",
+    "accelerometer",
+    "email"
+  ],
+  "author": "Evan Rutledge Borden",
+  "license": "ISC",
+  "dependencies": {
+    "gm": "1.9",
+    "argparse": "*"
+  }
+}
