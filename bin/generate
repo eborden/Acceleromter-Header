@@ -1,7 +1,16 @@
 #!/usr/bin/env node
 var http = require('http'),
     gm = require('gm'),
-    ArgumentParser = require('argparse').ArgumentParser;
+    emailjs = require('emailjs'),
+    ArgumentParser = require('argparse').ArgumentParser,
+    config;
+
+try {
+    config = require('../config.js');
+} catch (e) {
+    console.log('no configuration file at config.js');
+    return;
+}
 
 parser = new ArgumentParser({
     version: '0.0.0',
@@ -18,17 +27,16 @@ function percentize(v) {
     return v / 255 * 100;
 }
 
-function buildImage(data) {
-    var filePath = 'built/accelerometer-v' + parseInt(options.vol, 10) + '-i' + parseInt(options.i, 10) + '.png';
+function buildImage(data, volume, issue) {
+    var filePath = 'built/accelerometer-v' + parseInt(volume, 10) + '-i' + parseInt(issue, 10) + '.png';
     gm('images/base.png')
         .modulate(100, 0, 100)
-        //.modulate(data.hsv.hue, data.hsv.saturation, data.hsv.value)
         .colorize(percentize(data.rgb.red), percentize(data.rgb.green), percentize(data.rgb.blue))
         .fill(data.hsv.value > 50 ? '#ffffff' : '#000000')
         .font('Arial.ttf', 28)
         .drawText(270, 40, 'Accelerometer', 'northeast')
         .fontSize(12)
-        .drawText(270, 50, 'volume ' + options.vol + ', issue ' + options.i, 'northeast')
+        .drawText(270, 50, 'volume ' + volume + ', issue ' + issue, 'northeast')
         .write(filePath, function (err) {
             if (err) {
                 console.log(err);
@@ -36,6 +44,7 @@ function buildImage(data) {
                 console.log('generated ' + filePath + ' with color "' + data.title + '"');
             }
         });
+    return filePath;
 }
 
 
@@ -45,6 +54,23 @@ http.get('http://www.colourlovers.com/api/colors/random?format=json', function (
         data += chunk;
     })
     .on('end', function () {
-        buildImage(JSON.parse(data)[0]);
+        var title = 'Accelerometer volume ' + options.vol + ' issue ' + options.i,
+            server = emailjs.server.connect({
+                user: config.user,
+                password: config.password,
+                host: config.host,
+                ssl: config.ssl
+            });
+        server.send({
+            to: config.to,
+            from: config.from,
+            subject: title,
+            text: 'time to get it going',
+            attachment: [
+                {path: buildImage(JSON.parse(data)[0], options.vol, options.i), type: 'image/png', rename: title.toLowerCase().replace(' ', '-') + '.png'}
+            ]
+        }, function (err, message) {
+            console.log(err || message);
+        });
     });
 });
